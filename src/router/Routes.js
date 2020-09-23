@@ -1,21 +1,35 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
     BrowserRouter as Router,
     Switch,
-    Route,
   } from "react-router-dom";
+import { PrivateRoute } from './Private.routes';
+
 import { LoginScreen } from '../components/login/LoginScreen';
 import { DashboardRoutes } from './DashboardRoutes';
+import { AuthContext } from '../auth/AuthContext';
+import { PublicRoute } from './Public.routes';
 
 export const Routes = () => {
-    return (
-        <Router>
+
+  const {user} = useContext(AuthContext);
+
+  return (
+      <Router>
         <div>
           <Switch>
-            <Route exact path="/login" component={ LoginScreen } />
-            <Route path="/" component={ DashboardRoutes } />
+            <PublicRoute 
+              exact path="/login" 
+              component={ LoginScreen } 
+              isAuth={user.logged}
+            />
+            <PrivateRoute
+              isAuth={user.logged} 
+              path="/" 
+              component={ DashboardRoutes } 
+            />
           </Switch>
         </div>
       </Router>
-    )
+  )
 }
